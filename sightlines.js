@@ -1,7 +1,7 @@
 $(function() {
 	queue()
         .defer(d3.json, "5MileRadius_footprints.geojson")
-        .defer(d3.json, "BUilding_Footprints_2017s.geojson")
+        .defer(d3.json, "Building_Footprints_2017s.geojson")
         .defer(d3.csv, "notBlocked_5.csv")
        // .defer(d3.json,"randomPoints.json")
         .await(dataDidLoad);
