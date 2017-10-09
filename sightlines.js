@@ -29,7 +29,7 @@ function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs,se,seDictionary,seTables) {
     var seData = seDataDictionary(se)
     var visibleData = {}
     for(var i in bgIds){
-        d3.select("._"+bgIds[i].bgid).style("fill","#57e5a3").attr("opacity",.3)
+        d3.select("._"+bgIds[i].bgid).style("fill","#57e5a3").attr("opacity",.2)
         visibleData[bgIds[i].bgid] = seData[bgIds[i].bgid]
     }
     removeNoPopulationBlockGroups(visibleData)
