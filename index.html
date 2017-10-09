@@ -42,14 +42,14 @@
   This map applies public data to the act of seeing. It uses data on the elevation and footprints of buildings in New York City to calculate which rooftops have sightlines to the Statue of Liberty. </p>
   <p>
   In ideal conditions, sightlines are reciprocal. For the purposes of this experiment, we say that the rooftops that have views of the statue also compose the view from the statue. Buildings visible from the statue are seen through the lens of demographic data here to show what is in the view.</p></strong>
-  <p>Data sources:<br/>
+  <p><strong>Data sources:</strong><br/>
   Building Footprints for New York City(Last Update: 03/15/2017) <br/>
   https://data.cityofnewyork.us/Housing-Development/Building-Footprints/nqwf-w8eh</p>
   <p>Basemap map tiles:<br/>
   Open Street Map Roads Layer provided by mapzen vector tile service</p>
   <p>Statue of liberty:<br/>
   https://en.wikipedia.org/wiki/Statue_of_Liberty#Physical_characteristics</p>
-  <p>Current Method:<br/>
+  <p><strong>Current Method:</strong><br/>
   Step 1: For each building, generate 20 random points within the footprint.<br/>
   Step 2: For each point, draw line between point and the statue. <br/>
   Step 3: For each line, determine if  other building polygons intersects it.<br/>
