@@ -5,33 +5,95 @@ $(function() {
         .defer(d3.csv, "notBLocked_RandomPointsTest.csv")
         .defer(d3.csv,"BlockGroupsWithView.csv")
         .defer(d3.json,"blockgroups_2.geojson")
+        .defer(d3.csv,"socialExplorer.csv")
+    	.defer(d3.json,"socialExplorer_metadata.json")
+    	.defer(d3.json,"tables_dictionary_now.json")
         .await(dataDidLoad);
 })
 var statue = [-74.044502, 40.699247]
 
 var center = statue
-var scale = 150000
-function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs) {
-    console.log(nyc)
-    console.log(nyc2)
-    console.log(points)
-    var width = $("#map").width()
-    var mapSvg = d3.select("#map").append("svg").attr("width",2000).attr("height",2000)
+var scale = 240000
+function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs,se,seDictionary,seTables) {
+ //   console.log(nyc)
+ //   console.log(nyc2)
+    console.log(seDictionary)
+    var width = $("#map").width()*.9
+    var mapSvg = d3.select("#map").append("svg").attr("width",width).attr("height",width)
     //drawLines(lines)
     var blocked = []
 	var projection = d3.geoMercator().scale(scale).center(center)
-    drawBuildings(nyc,"#aaa",points)
    // drawTestPointsInPoly(nyc,randomPoints)
-   // drawBlockGroups(bgs,"#aaa")
-    //for(var i in bgIds){
-    //    console.log(bgIds[i].bgid)
-    //    d3.select("._"+bgIds[i].bgid).style("fill","none").style("stroke","green")
-    //}
+    drawBlockGroups(bgs,"#aaa")
+    drawBuildings(nyc,"#aaa",points)
+    var seData = seDataDictionary(se)
+    var visibleData = {}
+    for(var i in bgIds){
+        d3.select("._"+bgIds[i].bgid).style("fill","#57e5a3").attr("opacity",.3)
+        visibleData[bgIds[i].bgid] = seData[bgIds[i].bgid]
+    }
+    removeNoPopulationBlockGroups(visibleData)
+    var totalPopulation = getTotal("T001_001",visibleData)
+    var totalArea = getTotal("T003_001",visibleData)
+    var bgs = Object.keys(visibleData).length
+    var buildings = points.length
+    d3.select("#info").html(" <strong>"+buildings
+    +" </strong> buildings <br/><br/><strong>"+bgs+" </strong> Census Block Groups <br/>over  <strong>"
+    +totalArea+ " </strong> square miles <br/>with  <strong>"
+    +totalPopulation+" </strong> residents.")
+        
+    for(var c in seDictionary){
+        //console.log(getChartData(c,visibleData))
+        //console.log(getTitle(c,seDictionary))
+        //console.log(c)
+        break
+    }
     ////drawBuildings(nyc2,"#aaa")
     drawBaseMap()
     for(var i in points){
         d3.select("._"+points[i].ids).style("fill","red").style("stroke","none")
     }
+}
+function getTotal(code,visibleData){
+    var data = getChartData(code,visibleData)
+    var total = 0
+    for(var j in data){
+        if(isNaN(data[j])!=true){
+            total+=parseInt(data[j])
+        }
+    }
+    return total
+}
+
+function removeNoPopulationBlockGroups(visibleData){
+    var populationCode = "T001_001"
+    var populationData = getChartData("T001_001",visibleData)
+    for(var j in populationData){
+        if(populationData[j]==0){
+            d3.select("._"+j).remove()
+        }
+    }
+}
+
+function getTitle(code,seDictionary){
+    return seDictionary[code]
+}
+
+function getChartData(code,data){
+    var codeData = {}
+    for(var id in data){
+        codeData[id]=data[id]["SE_"+code]
+    }
+    return codeData
+}
+function seDataDictionary(data){
+    var formattedData = {}
+    for(var i in data){
+        var gid = data[i]["Geo_FIPS"]
+        formattedData[gid]=data[i]
+    }
+    return formattedData
+    //Geo_FIPS
 }
 function drawScale(){
 	var projection = d3.geoMercator().scale(scale).center(center)
@@ -148,7 +210,7 @@ function drawBuildings(geoData,color,points){
 		.style("fill",function(d){
             var did = d["properties"]["doitt_id"]
             //var a = fruits.indexOf("Apple");
-           return "#aaa"
+           return "none"
 		})
 		.attr("class",function(d){
             //return "perspective"
@@ -171,12 +233,11 @@ function drawBuildings(geoData,color,points){
             +"<strong>Building Height: </strong>"+bheight+"<br/>"
             +"<strong>Ground Elevation: </strong>"+gelevation+"<br/>"
             +"<strong>Can be seen: </strong>"+seen+"<br/>"
-            d3.select("#info").html(text)
+            d3.select("#buildingInfo").html(text)
         })
 }
 
 function drawBaseMap(){
-    console.log("basemap")
     var width = $("#map").width()
     var tiler = d3.tile()
         .size([width,width]);
@@ -200,7 +261,7 @@ function drawBaseMap(){
             g.selectAll("path")
               .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
             .enter().append("path")
-            .attr("stroke-width",0.5)
+            .attr("stroke-width",0.2)
               .attr("class", function(d) { return d.properties.kind+" basemap"; })
               .attr("d", path);
           });
