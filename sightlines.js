@@ -2,15 +2,16 @@ $(function() {
 	queue()
         .defer(d3.json, "5MileRadius_footprints.geojson")
         .defer(d3.json, "Building_Footprints_2017s.geojson")
-        .defer(d3.csv, "notBlocked_5.csv")
-       // .defer(d3.json,"randomPoints.json")
+        .defer(d3.csv, "notBLocked_RandomPointsTest.csv")
+        .defer(d3.csv,"BlockGroupsWithView.csv")
+        .defer(d3.json,"blockgroups_2.geojson")
         .await(dataDidLoad);
 })
 var statue = [-74.044502, 40.699247]
 
 var center = statue
-var scale = 300000
-function dataDidLoad(error,nyc,nyc2,points) {
+var scale = 150000
+function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs) {
     console.log(nyc)
     console.log(nyc2)
     console.log(points)
@@ -21,7 +22,12 @@ function dataDidLoad(error,nyc,nyc2,points) {
 	var projection = d3.geoMercator().scale(scale).center(center)
     drawBuildings(nyc,"#aaa",points)
    // drawTestPointsInPoly(nyc,randomPoints)
-    drawBuildings(nyc2,"#aaa")
+   // drawBlockGroups(bgs,"#aaa")
+    //for(var i in bgIds){
+    //    console.log(bgIds[i].bgid)
+    //    d3.select("._"+bgIds[i].bgid).style("fill","none").style("stroke","green")
+    //}
+    ////drawBuildings(nyc2,"#aaa")
     drawBaseMap()
     for(var i in points){
         d3.select("._"+points[i].ids).style("fill","red").style("stroke","none")
@@ -31,7 +37,42 @@ function drawScale(){
 	var projection = d3.geoMercator().scale(scale).center(center)
     
 }
-
+function drawBlockGroups(geoData,color){
+    var seenIdsArray = []
+    
+    var colorScale = d3.scaleLinear().domain([0,100]).range(["white","green"])
+    //need to generalize projection into global var later
+    
+	var projection = d3.geoMercator().scale(scale).center(center)
+    //d3 geo path uses projections, it is similar to regular paths in line graphs
+	var path = d3.geoPath().projection(projection);
+    
+    //push data, add path
+    var svg = d3.select("#map svg")
+	svg.selectAll(".buildings")
+		.data(geoData.features)
+        .enter()
+        .append("path")
+		.attr("d",path)
+		.style("stroke",function(d){
+		  // return "#aaa"
+           return "none"
+		})
+		.style("fill",function(d){
+            var did = d["properties"]["GEOID"]
+            //var a = fruits.indexOf("Apple");
+           return "none"
+		})
+		.attr("class",function(d){
+            //return "perspective"
+            return  "_"+d["properties"]["GEOID"]
+           
+		})
+        .on("mouseover",function(d){
+            console.log(d["properties"]["GEOID"])
+        })
+        
+}
 function drawTestPointsInPoly(geoData,randomPoints){
     var randomIndex = Math.round(Math.random()*Object.keys(randomPoints).length)
     console.log(randomIndex)
