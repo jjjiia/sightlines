@@ -1,7 +1,6 @@
 $(function() {
 	queue()
-        .defer(d3.json, "5MileRadius_footprints.geojson")
-        .defer(d3.json, "Building_Footprints_2017s.geojson")
+        .defer(d3.json, "randomPoints.geojson")
         .defer(d3.csv, "notBLocked_RandomPointsTest.csv")
         .defer(d3.csv,"BlockGroupsWithView.csv")
         .defer(d3.json,"blockgroups_2.geojson")
@@ -14,7 +13,7 @@ var statue = [-74.044502, 40.699247]
 
 var center = statue
 var scale = 240000
-function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs,se,seDictionary,seTables) {
+function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
  //   console.log(nyc)
  //   console.log(nyc2)
     console.log(seDictionary)
@@ -50,9 +49,7 @@ function dataDidLoad(error,nyc,nyc2,points,bgIds,bgs,se,seDictionary,seTables) {
     }
     ////drawBuildings(nyc2,"#aaa")
     drawBaseMap()
-    for(var i in points){
-        d3.select("._"+points[i].ids).style("fill","red").style("stroke","none")
-    }
+    
 }
 function getTotal(code,visibleData){
     var data = getChartData(code,visibleData)
@@ -210,7 +207,7 @@ function drawBuildings(geoData,color,points){
 		.style("fill",function(d){
             var did = d["properties"]["doitt_id"]
             //var a = fruits.indexOf("Apple");
-           return "none"
+           return "red"
 		})
 		.attr("class",function(d){
             //return "perspective"
