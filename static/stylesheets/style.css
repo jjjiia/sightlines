@@ -86,6 +86,7 @@ html, body{
 }
 #map{
     border:none;
+    border:1px solid #aaa;
 }
 #logo{
     padding-left:10px;
