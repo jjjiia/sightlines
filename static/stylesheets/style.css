@@ -52,6 +52,9 @@ html, body{
     line-height:130%;
     
 }
+.key{
+    margin-left:20px;
+}
 #subtitle{
     font-size:12px;  
     border-left:1px solid #aaa;  

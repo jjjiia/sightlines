@@ -48,6 +48,8 @@ function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
     
     var tableDictionary = makeTableDictionary(seDictionary)
     d3.select("#charts").append("div").attr("class","title").html("The view from the statue:")
+    d3.select("#charts").append("div").attr("class","key").html("<span style=\"color:#57e5a3\">&#9830 Block Groups containing sightlines</span>"
+    +"<br/><span style=\"color:#638ccc\">&#9830 All Block Groups</span><br/><br/>")
     for(var t in tablesInUse){
         var tableData = {}
         var allData = {}
@@ -104,8 +106,8 @@ function drawHistogramAll(data,table,seDictionary){
             return 2
         })
         .attr("height",barWidth-2)
-        .attr('fill',"blue")
-        .attr("opacity",.2)
+        .attr('fill',"#638ccc")
+        .attr("opacity",.8)
         .attr("class","barAll")
         
     
