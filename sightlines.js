@@ -12,7 +12,7 @@ $(function() {
 var statue = [-74.044502, 40.699247]
 
 var center = statue
-var scale = 240000
+var scale = 170000
 function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
  //   console.log(nyc)
  //   console.log(nyc2)
@@ -36,9 +36,9 @@ function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
     var totalArea = getTotal("T003_001",visibleData)
     var bgs = Object.keys(visibleData).length
     var buildings = points.length
-    d3.select("#info").html(" <strong>"+buildings
-    +" </strong> buildings <br/><br/><strong>"+bgs+" </strong> Census Block Groups <br/>over  <strong>"
-    +totalArea+ " </strong> square miles <br/>with  <strong>"
+    d3.select("#info").html("There are <strong>"+buildings
+    +" </strong> buildings from which the statue is visible.<br/><br/>These buildings fall into <strong>"+bgs+" </strong> Census Block Groups, a total of <strong>"
+    +totalArea+ " </strong> square miles with  <strong>"
     +totalPopulation+" </strong> residents.")
         
     for(var c in seDictionary){
@@ -113,9 +113,10 @@ function drawBlockGroups(geoData,color){
         .enter()
         .append("path")
 		.attr("d",path)
+        .attr("stroke-width",2)
 		.style("stroke",function(d){
 		  // return "#aaa"
-           return "none"
+           return "#fff"
 		})
 		.style("fill",function(d){
             var did = d["properties"]["GEOID"]
