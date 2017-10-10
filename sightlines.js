@@ -12,13 +12,13 @@ $(function() {
 var statue = [-74.044502, 40.699247]
 
 var center = statue
-var scale = 170000
+var scale = 140000
 function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
  //   console.log(nyc)
  //   console.log(nyc2)
     console.log(seDictionary)
-    var width = $("#map").width()*.9
-    var mapSvg = d3.select("#map").append("svg").attr("width",width).attr("height",width)
+    var width = $("#map").width()
+    var mapSvg = d3.select("#map").append("svg").attr("width",width).attr("height",600)
     //drawLines(lines)
     var blocked = []
 	var projection = d3.geoMercator().scale(scale).center(center)
@@ -36,11 +36,12 @@ function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
     var totalArea = getTotal("T003_001",visibleData)
     var bgs = Object.keys(visibleData).length
     var buildings = points.length
-    d3.select("#info").html("There are <strong>"+buildings
-    +" </strong> buildings from which the statue is visible.<br/><br/>These buildings fall into <strong>"+bgs+" </strong> Census Block Groups, a total of <strong>"
+    var info = d3.select("#info").html("<span style=\"color:red\">&#9830 Buildings</span>"+" There are <strong>"+buildings
+    +" </strong> buildings from which the statue is visible.<br/><br/>"
+    +"<span style=\"color:#57e5a3\">&#9830 Census Block Groups</span> These buildings fall into <strong>"+bgs+" </strong> Census Block Groups, a total of <strong>"
     +totalArea+ " </strong> square miles with  <strong>"
     +totalPopulation+" </strong> residents.")
-        
+    
     for(var c in seDictionary){
         //console.log(getChartData(c,visibleData))
         //console.log(getTitle(c,seDictionary))
