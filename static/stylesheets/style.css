@@ -44,8 +44,16 @@ html, body{
     line-height:130%;
     
 }
+.title{
+    padding:16px;
+    font-size:24px;
+    font-family:Times;
+    letter-spacing:2px;
+    line-height:130%;
+    
+}
 #subtitle{
-    font-size:14px;  
+    font-size:12px;  
     border-left:1px solid #aaa;  
     height:300px;
 }
@@ -84,7 +92,6 @@ html, body{
 }
 .axis{
     font-size:12px;
-    font-size: 3vw;
 }
 .chartAnnotation{
     font-size:12px;

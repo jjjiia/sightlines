@@ -16,7 +16,6 @@ var scale = 140000
 function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
  //   console.log(nyc)
  //   console.log(nyc2)
-    console.log(seDictionary)
     var width = $("#map").width()
     var mapSvg = d3.select("#map").append("svg").attr("width",width).attr("height",600)
     //drawLines(lines)
@@ -25,12 +24,15 @@ function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
    // drawTestPointsInPoly(nyc,randomPoints)
     drawBlockGroups(bgs,"#aaa")
     drawBuildings(nyc,"#aaa",points)
+    drawBaseMap()
+    
     var seData = seDataDictionary(se)
     var visibleData = {}
     for(var i in bgIds){
         d3.select("._"+bgIds[i].bgid).style("fill","#57e5a3").attr("opacity",.2)
         visibleData[bgIds[i].bgid] = seData[bgIds[i].bgid]
     }
+
     removeNoPopulationBlockGroups(visibleData)
     var totalPopulation = getTotal("T001_001",visibleData)
     var totalArea = getTotal("T003_001",visibleData)
@@ -42,15 +44,146 @@ function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
     +totalArea+ " </strong> square miles with  <strong>"
     +totalPopulation+" </strong> residents.")
     
-    for(var c in seDictionary){
-        //console.log(getChartData(c,visibleData))
-        //console.log(getTitle(c,seDictionary))
-        //console.log(c)
-        break
-    }
-    ////drawBuildings(nyc2,"#aaa")
-    drawBaseMap()
+    var tablesInUse = ["T025","T007","T013","T056","T128"]
     
+    var tableDictionary = makeTableDictionary(seDictionary)
+    d3.select("#charts").append("div").attr("class","title").html("The view from the statue:")
+    for(var t in tablesInUse){
+        var tableData = {}
+        var allData = {}
+        var table = tablesInUse[t]
+        var total = getTotal(table+"_001",visibleData)
+        for(var c in tableDictionary[table]){
+            var code = tableDictionary[table][c].key
+            if(code.split("_")[1]!="001"){
+                var value = parseInt(getTotal(code,visibleData))
+                var percent = Math.round(value/total*10000)/100
+                tableData[code]= percent
+            }
+        }
+        drawHistogram(tableData,table,seDictionary)
+        
+        var totalAll = getTotal(table+"_001",seData)
+        
+        for(var c in tableDictionary[table]){
+            var code = tableDictionary[table][c].key
+            if(code.split("_")[1]!="001"){
+                var value = parseInt(getTotal(code,seData))
+                var percent = Math.round(value/totalAll*10000)/100
+                allData[code]= percent
+            }
+        }
+        drawHistogramAll(allData,table,seDictionary)
+    }
+}
+function drawHistogramAll(data,table,seDictionary){
+    var width = 500
+    var margin = 30
+    var dataLength = Object.keys(data).length
+    var barWidth = 20//width/dataLength
+    var height = dataLength*barWidth
+    var yScale = d3.scaleLinear().domain([0,100]).range([0,width])
+    var svg = d3.select("#"+table+" svg")//.attr("width",width+250).attr("height",height+margin*2)
+    var tablesInUseNames = {"T025":"Highest Level of Education Attained",
+    "T007":"Age","T013":"Race",
+    "T056":"Household Income",
+    "T128":"Mode of Transportation"}
+    svg.append("text").text(tablesInUseNames[table]).attr("x",20).attr("y",20)
+    
+    svg.selectAll(".barAll")
+        .data(Object.keys(data))
+        .enter()
+        .append("rect")
+        .attr("y",function(d,i){
+            return i*barWidth+margin
+        })
+        .attr("x",function(d){
+            return yScale(data[d])+210
+        })
+        .attr("width",function(d){
+            return 2
+        })
+        .attr("height",barWidth-2)
+        .attr('fill',"blue")
+        .attr("opacity",.2)
+        .attr("class","barAll")
+        
+    
+}
+function drawHistogram(data,table,seDictionary){
+    var width = 500
+    var margin = 30
+    var dataLength = Object.keys(data).length
+    var barWidth = 20//width/dataLength
+    var height = dataLength*barWidth
+    var yScale = d3.scaleLinear().domain([0,100]).range([0,width])
+    var svg = d3.select("#charts").append("div").attr("id",table).append("svg").attr("width",width+250).attr("height",height+margin*2)
+    svg.selectAll(".bar")
+        .data(Object.keys(data))
+        .enter()
+        .append("rect")
+        .attr("y",function(d,i){
+            return i*barWidth+margin
+        })
+        .attr("x",function(d){
+            return 210
+        })
+        .attr("width",function(d){
+            return yScale(data[d])
+        })
+        .attr("height",barWidth-2)
+        .attr('fill',"#57e5a3")
+        .attr("opacity",.3)
+        
+    var yAxis = d3.axisBottom(yScale).ticks(5)
+        .tickFormat(function(d){return d+"%"})
+        .tickSize(height)
+        
+    var axis = svg.append("g")
+        .attr("transform","translate(210,"+margin+")")
+        .attr("class","axis")
+        .call(yAxis)
+    axis.select(".domain").remove()
+        
+    svg.selectAll(".bar")
+        .data(Object.keys(data))
+        .enter()
+        .append("text")
+        .text(function(d){return getTitle(d,seDictionary).split(":")[1]})
+        .attr("x",200)
+        .attr("y",function(d,i){
+            return i*barWidth+margin+15
+        })
+        .attr("font-size",11)
+        .attr('fill',"#aaa")
+        .attr("text-anchor","end")
+    svg.selectAll(".bar")
+        .data(Object.keys(data))
+        .enter()
+        .append("text")
+        .text(function(d){return data[d]+"%"})
+        .attr("x",function(d){
+            return yScale(data[d])+213
+        })
+        .attr("y",function(d,i){
+            return i*barWidth+margin+15
+        })
+        .attr("font-size",11)
+        .attr('fill',"#57e5a3")
+}
+function makeTableDictionary(seDictionary){
+    var formatted = {}
+    for(var i in seDictionary){
+        var key = i
+        var table = i.split("_")[0]
+        if(Object.keys(formatted).indexOf(table)>-1){
+            formatted[table].push({key:key,name:seDictionary[key]})
+        }else{
+            formatted[table]=[]
+            formatted[table].push({key:key,name:seDictionary[key]})
+        }
+    }
+    return formatted
 }
 function getTotal(code,visibleData){
     var data = getChartData(code,visibleData)
@@ -62,7 +195,6 @@ function getTotal(code,visibleData){
     }
     return total
 }
-
 function removeNoPopulationBlockGroups(visibleData){
     var populationCode = "T001_001"
     var populationData = getChartData("T001_001",visibleData)
@@ -72,11 +204,9 @@ function removeNoPopulationBlockGroups(visibleData){
         }
     }
 }
-
 function getTitle(code,seDictionary){
     return seDictionary[code]
 }
-
 function getChartData(code,data){
     var codeData = {}
     for(var id in data){
@@ -235,7 +365,6 @@ function drawBuildings(geoData,color,points){
             d3.select("#buildingInfo").html(text)
         })
 }
-
 function drawBaseMap(){
     var width = $("#map").width()
     var tiler = d3.tile()
