@@ -36,11 +36,10 @@ html, body{
     
 }
 #title{
-    padding:16px;
     margin:20px;
-    font-size:24px;
+    font-size:18px;
     font-family:Times;
-    letter-spacing:2px;
+    letter-spacing:1px;
     line-height:130%;
     
 }
@@ -54,6 +53,9 @@ html, body{
 }
 .key{
     margin-left:20px;
+}
+.singleMap{
+    border:1px solid #aaa;
 }
 #subtitle{
     font-size:12px;  

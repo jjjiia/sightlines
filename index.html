@@ -38,54 +38,13 @@
     Every* New York City Rooftop From Which You Can See the Statue of Liberty
     <br/>
     & vice versa
-        <br/>  
-  <span style="color:red; font-size:12px"><p>*work in progress</p></span>
 
-</div>
-
-
-<div class="col-md-4" id = "subtitle">
-  
- <p>
-  This map applies public data to the act of seeing. It uses data on the elevation and footprints of buildings in New York City to calculate which rooftops have sightlines to the Statue of Liberty. </p>
-  <p>
-  In ideal conditions, sightlines are reciprocal. For the purposes of this experiment, we say that the rooftops that have views of the statue also compose the view from the statue. Buildings visible from the statue are seen through the lens of demographic data here to show what is in the view.</p>
-  <p>
-    Up next: New Jersey, Trees, and Streets/Outdoors
-  </p>
-  <p>
-    Apologies for the layout, please scroll all the way down for Census data. Suggestions on this part is very very welcome. 
-  </p>
- </div>
- 
- <div class="col-md-4" id = "notes">
-  <p><strong>Data sources:</strong><br/>
-  Building Footprints for New York City (Last Update: 03/15/2017): <br/>
-  https://data.cityofnewyork.us/Housing-Development/Building-Footprints/nqwf-w8eh</p>
-  <p>Basemap map tiles:<br/>
-  Open Street Map Roads Layer provided by mapzen vector tile service</p>
-  <p>Statue of liberty:<br/>
-  https://en.wikipedia.org/wiki/Statue_of_Liberty#Physical_characteristics</p>
-  <p><strong>Current Method:</strong><br/>
-  1. For each building, generate 20 random points within the footprint.<br/>
-  2. For each point, draw line between point and the statue. <br/>
-  3. For each line, determine if  other building polygons intersects it.<br/>
-  4. For each intersection, determine if the building polygon is tall enough to block the view of the origin building.
-  </p>
-</div>
+  </div>
     </div>
        
-     <!--  <div class="col-md-3" id = "buildingInfo">
-         <br/>Rollover buildings to see id and elevation
-         <br/>
-         <br/>
-         <br/>
-         <br/>
-       </div>-->
 
  <div class="row">
 <div class="col-md-12" id = "map">
-  <div id = "info"></div>
 </div>
 <div class="col-md-12" id = "charts">
 </div>
@@ -99,7 +58,7 @@
 </script>
 	
 <!--<script src="statenislandoutput.js"></script>-->
-<script src="sightlines.js"></script>
+<script src="sightlines_dataColored.js"></script>
 	
 </body>
 </html>
