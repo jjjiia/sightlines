@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>sightlines</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  	<script src="static/javascripts/d3.v4.min.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.css' rel='stylesheet' />
+   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.1.1/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='geocoder.css' type='text/css' />
+    <style>
+        body { margin:0; padding:10;
+         }
+        #map { position:absolute; top:0; bottom:0; width:100%; 
+          z-index:-1;
+        }
+        #features {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding:10px;
+            border-radius:5px;
+            border:1px solid red;
+            color:red;
+            overflow: auto;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .mapboxgl-ctrl-top-right{
+          color:blue !important;
+        }
+        .geocoder-icon-search{
+          color:blue !important;
+        }
+        #title{
+          font-size:24px;
+          letter-spacing:2px;
+          padding:20px;
+          z-index:-1;
+          color:rgba(109,111,227,1);
+          position:absolute; top:0; bottom:0;
+          z-index:1;
+        }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<div id='title'>Sightlines in New York City</div>
+<pre id='features'></pre>
+<script>
+  var markers = {
+      "type": "FeatureCollection",
+      "features": [
+          {
+              "type": "Feature",
+              "properties": {
+                  "message": "Statue of Liberty",
+                  "iconSize": [60, 125]
+              },
+              "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    -74.04416,
+                      40.6896
+                  ]
+              }
+          },
+          {
+              "type": "Feature",
+              "properties": {
+                  "message": "Bar",
+                  "iconSize": [50, 50]
+              },
+              "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    -74.04416,
+                      40.7896
+                  ]
+              }
+          },
+          {
+              "type": "Feature",
+              "properties": {
+                  "message": "Baz",
+                  "iconSize": [40, 40]
+              },
+              "geometry": {
+                  "type": "Point",
+                  "coordinates": [
+                    -74.14416,
+                      40.6896
+                  ]
+              }
+          }
+      ]
+  };
+
+
+function hoverdiv(e,divid){
+
+      var left  = e.clientX  + "px";
+      var top  = e.clientY  + "px";
+
+      var div = document.getElementById(divid);
+
+      div.style.left = left;
+      div.style.top = top;
+
+      d3.select("#"+divid).toggle();
+      return false;
+  }
+
+        d3.select("#features").style("opacity",0).html("")
+
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiampqaWlhMTIzIiwiYSI6ImNpbDQ0Z2s1OTN1N3R1eWtzNTVrd29lMDIifQ.gSWjNbBSpIFzDXU2X5YCiQ';
+var statue = [-74.044502, 40.689247]
+var center = [statue[0]+.05,statue[1]]
+var bounds = [
+    [center[0]-.5, center[1]-.5], // Southwest coordinates
+    [center[0]+.5, center[1]+.5]  // Northeast coordinates
+];
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/jjjiia123/cjb2ah84r7qec2stqanud5poj',
+    center: center,
+    zoom: 12,
+    maxZoom: 19,
+    minZoom:12,
+    pitch: 55,
+    bearing: -17.6,
+    maxBounds: bounds // Sets bounds as max    
+});
+
+//markers.features.forEach(function(marker) {
+//    // create a DOM element for the marker
+//    var el = document.createElement('div');
+//    el.className = 'marker';
+//    el.style.backgroundImage = 'url(statue.png)';
+//    el.style.width = marker.properties.iconSize[0] + 'px';
+//    el.style.height = marker.properties.iconSize[1] + 'px';
+//
+//    el.addEventListener('click', function() {
+//        window.alert(marker.properties.message);
+//    });
+//
+//    // add marker to map
+//    new mapboxgl.Marker(el)
+//        .setLngLat(marker.geometry.coordinates)
+//        .addTo(map);
+//});
+
+
+
+map.addControl(new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+}));
+map.addControl(new mapboxgl.NavigationControl());
+
+
+//map.on('load', function() {
+//    // Insert the layer beneath any symbol layer.
+//    var layers = map.getStyle().layers;
+//
+//    var labelLayerId;
+//    for (var i = 0; i < layers.length; i++) {
+//        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+//            labelLayerId = layers[i].id;
+//            break;
+//        }
+//    }
+//
+//    map.addLayer({
+//        'id': '3d-buildings',
+//        'source': 'composite',
+//        'source-layer': 'building',
+//        'filter': ['==', 'extrude', 'true'],
+//        'type': 'fill-extrusion',
+//        'minzoom': 15,
+//        'paint': {
+//            'fill-extrusion-color': '#ddd',
+//
+//            // use an 'interpolate' expression to add a smooth transition effect to the
+//            // buildings as the user zooms in
+//            'fill-extrusion-height': [
+//                "interpolate", ["linear"], ["zoom"],
+//                15, 0,
+//                15.05, ["get", "height"]
+//            ],
+//            'fill-extrusion-base': [
+//                "interpolate", ["linear"], ["zoom"],
+//                15, 0,
+//                15.05, ["get", "min_height"]
+//            ],
+//            'fill-extrusion-opacity': .6
+//        }
+//    }, labelLayerId);
+//});
+
+
+map.on('mousemove', function (e) {
+  
+    var features = map.queryRenderedFeatures(e.point);
+    if(features.length>0){
+        d3.select("#features").style("opacity",1)
+      var topLayer = features[0].layer["source-layer"]
+      if(topLayer =="notBlocked_withAddress"){
+        var text = features[0].properties.address
+        d3.select("this").style("cursor","pointer")
+        document.getElementById('features').innerHTML = text
+        hoverdiv(event,"features")
+      }else{
+        var text = ""
+//        document.getElementById('features').innerHTML = text
+        d3.select("#features").style("opacity",0).html("")
+      }
+    }else{
+      var text = ""
+  //    document.getElementById('features').innerHTML = text
+        d3.select("#features").style("opacity",0).html("")
+    }
+    
+});
+
+map.on('click', function (e) {
+    var features = map.queryRenderedFeatures(e.point);
+    console.log(features[0].geometry.coordinates)
+    map.flyTo({center: features[0].geometry.coordinates});
+    
+    //if(features.length()>0){
+    //  var topLayer = features[0].layer["source-layer"]
+    //  if(topLayer =="notBlocked_withAddress"){
+    //    var text = features[0].properties.address
+    //    console.log(text)
+    //  }else{
+    //    var text = "blocked"
+    //  }
+    //}else{
+    //  var text = "NOTHING"
+    //}
+    //
+    ////console.log(JSON.stringify(features, null, 2))
+    //document.getElementById('features').innerHTML = text
+    //document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
+});
+d3.selectAll("div .mapboxgl-ctrl-bottom-right").remove()
+
+</script>
+
+</body>
+</html>

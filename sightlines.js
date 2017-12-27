@@ -1,83 +1,13 @@
 $(function() {
 	queue()
-        .defer(d3.json, "randomPoints.geojson")
-        .defer(d3.csv, "notBLocked_RandomPointsTest.csv")
-        .defer(d3.csv,"BlockGroupsWithView.csv")
-        .defer(d3.json,"buildings_withBlockgroupId.geojson")
-        .defer(d3.csv,"socialExplorer.csv")
-    	.defer(d3.json,"socialExplorer_metadata.json")
-    	.defer(d3.json,"tables_dictionary_now.json")
-        .await(dataDidLoad);
+    .defer(d3.json,"statue_notBlocked_randomPointsTest.geojson")
+    .await(dataDidLoad);
 })
-var statue = [-74.044502, 40.699247]
-
+var statue = [-73.985428, 40.748817]
 var center = statue
-var scale = 140000
-function dataDidLoad(error,nyc,points,bgIds,bgs,se,seDictionary,seTables) {
- //   console.log(nyc)
- //   console.log(nyc2)
-    console.log(bgs)
-    var width = $("#map").width()
-    var mapSvg = d3.select("#map").append("svg").attr("width",width).attr("height",600)
-    //drawLines(lines)
-    var blocked = []
-	var projection = d3.geoMercator().scale(scale).center(center)
-   // drawTestPointsInPoly(nyc,randomPoints)
-    drawBlockGroups(bgs,"#aaa")
-    drawBuildings(nyc,"#aaa",points)
-    drawBaseMap()
-    
-    var seData = seDataDictionary(se)
-    var visibleData = {}
-    for(var i in bgIds){
-        d3.select("._"+bgIds[i].bgid).style("fill","#57e5a3").attr("opacity",.2)
-        visibleData[bgIds[i].bgid] = seData[bgIds[i].bgid]
-    }
-
-    removeNoPopulationBlockGroups(visibleData)
-    var totalPopulation = getTotal("T001_001",visibleData)
-    var totalArea = getTotal("T003_001",visibleData)
-    var bgs = Object.keys(visibleData).length
-    var buildings = points.length
-    var info = d3.select("#info").html("<span style=\"color:red\">&#9830 Buildings</span>"+" There are <strong>"+buildings
-    +" </strong> buildings from which the statue is visible.<br/><br/>"
-    +"<span style=\"color:#57e5a3\">&#9830 Census Block Groups</span> These buildings fall into <strong>"+bgs+" </strong> Census Block Groups, a total of <strong>"
-    +totalArea+ " </strong> square miles with  <strong>"
-    +totalPopulation+" </strong> residents.")
-    
-    var tablesInUse = ["T025","T007","T013","T056","T128"]
-    
-    var tableDictionary = makeTableDictionary(seDictionary)
-    d3.select("#charts").append("div").attr("class","title").html("The view from the statue:")
-    d3.select("#charts").append("div").attr("class","key").html("<span style=\"color:#57e5a3\">&#9830 Block Groups containing sightlines</span>"
-    +"<br/><span style=\"color:#638ccc\">&#9830 All Block Groups</span><br/><br/>")
-    for(var t in tablesInUse){
-        var tableData = {}
-        var allData = {}
-        var table = tablesInUse[t]
-        var total = getTotal(table+"_001",visibleData)
-        for(var c in tableDictionary[table]){
-            var code = tableDictionary[table][c].key
-            if(code.split("_")[1]!="001"){
-                var value = parseInt(getTotal(code,visibleData))
-                var percent = Math.round(value/total*10000)/100
-                tableData[code]= percent
-            }
-        }
-        drawHistogram(tableData,table,seDictionary)
-        
-        var totalAll = getTotal(table+"_001",seData)
-        
-        for(var c in tableDictionary[table]){
-            var code = tableDictionary[table][c].key
-            if(code.split("_")[1]!="001"){
-                var value = parseInt(getTotal(code,seData))
-                var percent = Math.round(value/totalAll*10000)/100
-                allData[code]= percent
-            }
-        }
-        drawHistogramAll(allData,table,seDictionary)
-    }
+var scale = 210000
+function dataDidLoad(error,buildings) {
+     drawBuildings(buildings)
 }
 function drawHistogramAll(data,table,seDictionary){
     var width = 500
@@ -210,10 +140,24 @@ function removeNoPopulationBlockGroups(visibleData){
 function getTitle(code,seDictionary){
     return seDictionary[code]
 }
-function getChartData(code,data){
+function getChartData(code,data,mode){
     var codeData = {}
     for(var id in data){
-        codeData[id]=data[id]["SE_"+code]
+        var gid = data[id]["Geo_FIPS"]
+        var totalCode = code.split("_")[0]+"_001"
+        var total = parseFloat(data[id]["SE_"+totalCode])
+        var value = parseFloat(data[id]["SE_"+code])
+        var percent = Math.round(value/total*10000)/100
+    //    console.log([totalCode,code])
+      //  console.log([total,value,percent])
+        var totalPopulationCode ="T002_001"
+        if(total!=0&&total!=undefined){
+            if(mode == "percent"){
+                codeData[gid]=percent
+            }else{
+                codeData[gid]=value
+            }
+        }
     }
     return codeData
 }
@@ -230,42 +174,33 @@ function drawScale(){
 	var projection = d3.geoMercator().scale(scale).center(center)
     
 }
-function drawBlockGroups(geoData,color){
-    var seenIdsArray = []
-    
-    var colorScale = d3.scaleLinear().domain([0,100]).range(["white","green"])
-    //need to generalize projection into global var later
-    
+function drawBlockGroups(geoData){
 	var projection = d3.geoMercator().scale(scale).center(center)
-    //d3 geo path uses projections, it is similar to regular paths in line graphs
 	var path = d3.geoPath().projection(projection);
+    var width = $("#map").width()
+    var height = $("#map").height()
+    var code = "test"
+    var svg = d3.select("#map").append("svg")
+    .attr("width",width).attr("height",height).attr("class",code)
+   // drawBaseMap(code)
     
-    //push data, add path
-    var svg = d3.select("#map svg")
+    var colorScale = d3.scaleLinear().domain([0,200]).range(["red","green"])
+    
 	svg.selectAll(".buildings")
 		.data(geoData.features)
         .enter()
         .append("path")
 		.attr("d",path)
-        .attr("stroke-width",2)
-		.style("stroke",function(d){
-		  // return "#aaa"
-           return "#fff"
-		})
+        .attr("stroke-width", 1)
 		.style("fill",function(d){
-            var did = d["properties"]["GEOID"]
-            //var a = fruits.indexOf("Apple");
-           return "none"
+         //   console.log(d)
+            var gl = parseFloat(d.properties.groundelev)
+            var bh = parseFloat(d.properties.heightroof)
+            var th = gl+bh
+           // return colorScale(th)
+           return "red"
 		})
-		.attr("class",function(d){
-            //return "perspective"
-            return  "_"+d["properties"]["GEOID"]
-           
-		})
-        .on("mouseover",function(d){
-            console.log(d["properties"]["GEOID"])
-        })
-        
+        //.attr("transform","translate(0,150)")
 }
 function drawTestPointsInPoly(geoData,randomPoints){
     var randomIndex = Math.round(Math.random()*Object.keys(randomPoints).length)
@@ -315,11 +250,8 @@ var path = d3.geoPath().projection(projection);
         }
     	
 }
-function drawBuildings(geoData,color,points){
-    var seenIdsArray = []
-     for(var i in points){
-         seenIdsArray.push(points[i].ids)
-     }
+function drawBuildings(geoData){
+
     
     var colorScale = d3.scaleLinear().domain([0,100]).range(["white","green"])
     //need to generalize projection into global var later
@@ -329,7 +261,7 @@ function drawBuildings(geoData,color,points){
 	var path = d3.geoPath().projection(projection);
     
     //push data, add path
-    var svg = d3.select("#map svg")
+    var svg = d3.select("#map").append("svg").attr("width",500).attr("height",500)
 	svg.selectAll(".buildings")
 		.data(geoData.features)
         .enter()
@@ -368,7 +300,7 @@ function drawBuildings(geoData,color,points){
             d3.select("#buildingInfo").html(text)
         })
 }
-function drawBaseMap(){
+function drawBaseMap(className){
     var width = $("#map").width()
     var tiler = d3.tile()
         .size([width,width]);
@@ -376,7 +308,7 @@ function drawBaseMap(){
     var path = d3.geoPath()
         .projection(projection);
 
-    var svg = d3.select("#map svg").append("g")
+    var svg = d3.select("."+className).append("g")
       
 
     svg.selectAll("path")
