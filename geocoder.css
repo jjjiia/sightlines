@@ -1,3 +1,16 @@
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color:rgba(109,111,227,1);
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color:rgba(109,111,227,1);
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color:rgba(109,111,227,1);
+}
+:-moz-placeholder { /* Firefox 18- */
+    color:rgba(109,111,227,1);
+}
+
 /* Basics */
 .mapboxgl-ctrl-geocoder,
 .mapboxgl-ctrl-geocoder *,
@@ -16,27 +29,30 @@
   max-width:360px;
   z-index:1;
   border-radius:3px;
+  box-shadow:none;
+  
   }
 
 .mapboxgl-ctrl-geocoder input[type='text'] {
   font-size:12px;
   width:100%;
-  border:0;
+  border:1px solid rgba(109,111,227,1);
   background-color:transparent;
   height:40px;
   margin:0;
-  color:rgba(109,111,227,.5);
+  color:rgba(109,111,227,1) !important;
   padding:10px 10px 10px 40px;
   text-overflow:ellipsis;
   white-space:nowrap;
   overflow:hidden;
+  box-shadow:none;
+  
   }
   .mapboxgl-ctrl-geocoder input:focus {
       color:rgba(109,111,227,.5);
     outline:0;
     box-shadow:none;
-    outline:thin dotted\8;
-    }
+}
 
 .mapboxgl-ctrl-geocoder .geocoder-icon-search {
   position:absolute;
@@ -93,19 +109,19 @@
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-    border-bottom:1px solid blue;
-    color:rgba(109,111,227,.5);
+    border-bottom:1px solid rgba(109,111,227,.5);
+    color:rgba(109,111,227,.6);
     }
     .mapboxgl-ctrl-geocoder ul > li:last-child > a { border-bottom:none; }
     .mapboxgl-ctrl-geocoder ul > li > a:hover {
-        color:rgba(109,111,227,.5);
-      background-color:#f3f3f3;
+        color:rgba(109,111,227,1);
+      background-color:#ffffff;
       text-decoration:none;
       cursor:pointer;
       }
     .mapboxgl-ctrl-geocoder ul > li.active > a {
-        color:rgba(109,111,227,.5);
-      background-color:#e3e3e3;
+        color:rgba(109,111,227,1);
+        background-color:#ffffff;
       text-decoration:none;
       cursor:pointer;
       }
@@ -126,15 +142,36 @@
   color:rgba(109,111,227,.5);
   }
   .geocoder-icon-search {
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmVyc2lvbj0iMS4xIj4NCiAgPHBhdGggZD0iTTguNSA0QzYgNCA0IDYgNCA4LjUgNCAxMSA2IDEzIDguNSAxMyA5LjQgMTMgMTAuMiAxMi44IDEwLjggMTIuM0wxMC45IDEyLjMgMTQuMyAxNS43QzE0LjUgMTUuOSAxNC43IDE2IDE1IDE2IDE1LjYgMTYgMTYgMTUuNiAxNiAxNSAxNiAxNC43IDE1LjkgMTQuNSAxNS43IDE0LjNMMTIuMyAxMC45IDEyLjMgMTAuOEMxMi44IDEwLjIgMTMgOS40IDEzIDguNSAxMyA2IDExIDQgOC41IDR6TTguNSA1LjVDMTAuMiA1LjUgMTEuNSA2LjggMTEuNSA4LjUgMTEuNSAxMC4yIDEwLjIgMTEuNSA4LjUgMTEuNSA2LjggMTEuNSA1LjUgMTAuMiA1LjUgOC41IDUuNSA2LjggNi44IDUuNSA4LjUgNS41eiIgZmlsbD0iIzAwMCIvPg0KPC9zdmc+);
+    background-image: url("search.png");
     }
   .geocoder-icon-close {
-    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgdmVyc2lvbj0iMS4xIiBoZWlnaHQ9IjIwIiB3aWR0aD0iMjAiPg0KICA8cGF0aCBkPSJtNSA1IDAgMS41IDMuNSAzLjUtMy41IDMuNSAwIDEuNSAxLjUgMCAzLjUtMy41IDMuNSAzLjUgMS41IDAgMC0xLjUtMy41LTMuNSAzLjUtMy41IDAtMS41LTEuNSAwLTMuNSAzLjUtMy41LTMuNS0xLjUgMHoiIGZpbGw9IiMwMDAiLz4NCjwvc3ZnPg==);
+    background-image:url("close.png");
     }
   .geocoder-icon-loading {
-    background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiPjxwYXRoIGQ9Im0xMCAyIDAgMy4zYzIuNiAwIDQuNyAyLjEgNC43IDQuN2wzLjMgMGMwLTQuNC0zLjYtOC04LTh6IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTEwIDJDNi44IDIgMy43IDQuMSAyLjYgNy4xIDEuNCAxMCAyLjEgMTMuNiA0LjUgMTUuOGMyLjQgMi40IDYuNCAyLjkgOS40IDEuMiAyLjUtMS40IDQuMi00LjIgNC4yLTctMS4xIDAtMi4yIDAtMy4zIDAgMC4xIDIuMi0xLjcgNC4zLTMuOCA0LjZDOC43IDE1IDYuNCAxMy44IDUuNyAxMS43IDQuOCA5LjcgNS42IDcuMSA3LjYgNiA4LjMgNS42IDkuMSA1LjMgMTAgNS4zYzAtMS4xIDAtMi4yIDAtMy4zeiIgc3R5bGU9ImZpbGw6IzAwMDtvcGFjaXR5OjAuMiIvPjwvc3ZnPg==);
+    background-image:url("load.gif");
     -webkit-animation: rotate 400ms linear infinite;
        -moz-animation: rotate 400ms linear infinite;
         -ms-animation: rotate 400ms linear infinite;
             animation: rotate 400ms linear infinite;
     }
+    .mapboxgl-ctrl{
+        box-shadow:none;
+    }
+
+    .mapboxgl-ctrl-group > button{
+        border-bottom:1px solid rgba(109,111,227,1);
+    }
+    .mapboxgl-ctrl-zoom-in{
+        color:#aaa;
+        background-image: url("search.png");
+        border-bottom:1px solid rgba(109,111,227,1);
+    }
+    .mapboxgl-ctrl-zoom-out{
+        color:#aaa;
+        background-image: url("search.png");
+        border-bottom:1px solid rgba(109,111,227,1)
+    }
+.mapboxgl-ctrl-group{
+    background-color:#fff;
+    border:1px solid rgba(109,111,227,1)
+}

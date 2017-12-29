@@ -38,8 +38,16 @@
           padding:20px;
           z-index:-1;
           color:rgba(109,111,227,1);
-          position:absolute; top:0; bottom:0;
+          position:absolute; top:0px; bottom:0px;
           z-index:1;
+        }
+        #subtitle{
+          width:300px;
+          height:200px;
+          border:1px solid rgba(109,111,227,1);
+          color:rgba(109,111,227,1);
+          z-index:1;
+          position:absolute; top:60px; left:20px;
         }
     </style>
 </head>
@@ -47,6 +55,7 @@
 
 <div id='map'></div>
 <div id='title'>Sightlines in New York City</div>
+<div id='subtitle'></div>
 <pre id='features'></pre>
 <script>
   var markers = {
@@ -246,7 +255,8 @@ map.on('click', function (e) {
     //document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
 });
 d3.selectAll("div .mapboxgl-ctrl-bottom-right").remove()
-
+d3.select(".mapboxgl-ctrl input").attr("placeholder","SEARCH ")
+d3.select(".mapboxgl-ctrl-zoom-in").attr("background-image","url(\"search.png\")")
 </script>
 
 </body>
