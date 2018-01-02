@@ -162,15 +162,14 @@
         border-bottom:1px solid rgba(109,111,227,1);
     }
     .mapboxgl-ctrl-zoom-in{
-        color:#aaa;
-        background-image: url("search.png");
+        background-image: url("zoomin.png");
         border-bottom:1px solid rgba(109,111,227,1);
     }
     .mapboxgl-ctrl-zoom-out{
-        color:#aaa;
-        background-image: url("search.png");
+        background-image: url("zoomout.png");
         border-bottom:1px solid rgba(109,111,227,1)
     }
+
 .mapboxgl-ctrl-group{
     background-color:#fff;
     border:1px solid rgba(109,111,227,1)

@@ -133,13 +133,13 @@ var bounds = [
 ];
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/jjjiia123/cjb2ah84r7qec2stqanud5poj',
+    style: 'mapbox://styles/jjjiia123/cjbtpo92mauj42sqmosoj5hls',
     center: center,
-    zoom: 12,
-    maxZoom: 19,
-    minZoom:12,
-    pitch: 55,
-    bearing: -17.6,
+    zoom: 11,
+    maxZoom: 16.2,
+    minZoom:10,
+    pitch: 50,
+    bearing: 3,
     maxBounds: bounds // Sets bounds as max    
 });
 
@@ -162,51 +162,79 @@ var map = new mapboxgl.Map({
 //});
 
 
-
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+}));
 map.addControl(new MapboxGeocoder({
     accessToken: mapboxgl.accessToken
 }));
 map.addControl(new mapboxgl.NavigationControl());
 
+//map.on('load',function(){
+//  
+//  map.flyTo({
+//      // These options control the ending camera position: centered at
+//      // the target, at zoom level 9, and north up.
+//      center: center,
+//      zoom: 12.5,
+//      bearing:3,
+//    pitch: 50,
+//      // These options control the flight curve, making it move
+//      // slowly and zoom out almost completely before starting
+//      // to pan.
+//      speed: 0.1, // make the flying slow
+//      curve: 1, // change the speed at which it zooms out
+//
+//      // This can be any easing function: it takes a number between
+//      // 0 and 1 and returns another number between 0 and 1.
+//      easing: function (t) {
+//          return t;
+//      }
+//  });
+//})
 
-//map.on('load', function() {
-//    // Insert the layer beneath any symbol layer.
-//    var layers = map.getStyle().layers;
-//
-//    var labelLayerId;
-//    for (var i = 0; i < layers.length; i++) {
-//        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-//            labelLayerId = layers[i].id;
-//            break;
-//        }
-//    }
-//
-//    map.addLayer({
-//        'id': '3d-buildings',
-//        'source': 'composite',
-//        'source-layer': 'building',
-//        'filter': ['==', 'extrude', 'true'],
-//        'type': 'fill-extrusion',
-//        'minzoom': 15,
-//        'paint': {
-//            'fill-extrusion-color': '#ddd',
-//
-//            // use an 'interpolate' expression to add a smooth transition effect to the
-//            // buildings as the user zooms in
-//            'fill-extrusion-height': [
-//                "interpolate", ["linear"], ["zoom"],
-//                15, 0,
-//                15.05, ["get", "height"]
-//            ],
-//            'fill-extrusion-base': [
-//                "interpolate", ["linear"], ["zoom"],
-//                15, 0,
-//                15.05, ["get", "min_height"]
-//            ],
-//            'fill-extrusion-opacity': .6
-//        }
-//    }, labelLayerId);
-//});
+
+map.on('load', function() {
+    // Insert the layer beneath any symbol layer.
+    var layers = map.getStyle().layers;
+
+    var labelLayerId;
+    for (var i = 0; i < layers.length; i++) {
+        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+            labelLayerId = layers[i].id;
+            break;
+        }
+    }
+
+    map.addLayer({
+        'id': '3d-buildings',
+        'source': 'composite',
+        'source-layer': 'building',
+        'filter': ['==', 'extrude', 'true'],
+        'type': 'fill-extrusion',
+        'minzoom': 15,
+        'paint': {
+            'fill-extrusion-color': '#ddd',
+
+            // use an 'interpolate' expression to add a smooth transition effect to the
+            // buildings as the user zooms in
+            'fill-extrusion-height': [
+                "interpolate", ["linear"], ["zoom"],
+                15, 0,
+                15.05, ["get", "height"]
+            ],
+            'fill-extrusion-base': [
+                "interpolate", ["linear"], ["zoom"],
+                15, 0,
+                15.05, ["get", "min_height"]
+            ],
+            'fill-extrusion-opacity': .6
+        }
+    }, labelLayerId);
+});
 
 
 map.on('mousemove', function (e) {
@@ -257,6 +285,12 @@ map.on('click', function (e) {
 d3.selectAll("div .mapboxgl-ctrl-bottom-right").remove()
 d3.select(".mapboxgl-ctrl input").attr("placeholder","SEARCH ")
 d3.select(".mapboxgl-ctrl-zoom-in").attr("background-image","url(\"search.png\")")
+
+
+d3.selectAll(".mapboxgl-ctrl-zoom-in button").attr("background-image","url(\"zoomin.png\")")
+d3.select(".mapboxgl-ctrl-zoom-out").attr("background-image","url(\"zoomout.png\")")
+d3.select(".mapboxgl-ctrl-compass").attr("background-image","url(\"compass.png\")")
+
 </script>
 
 </body>
