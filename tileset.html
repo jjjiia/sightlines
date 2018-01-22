@@ -65,41 +65,13 @@
               "type": "Feature",
               "properties": {
                   "message": "Statue of Liberty",
-                  "iconSize": [60, 125]
+                  "iconSize": [100, 125]
               },
               "geometry": {
                   "type": "Point",
                   "coordinates": [
-                    -74.04416,
-                      40.6896
-                  ]
-              }
-          },
-          {
-              "type": "Feature",
-              "properties": {
-                  "message": "Bar",
-                  "iconSize": [50, 50]
-              },
-              "geometry": {
-                  "type": "Point",
-                  "coordinates": [
-                    -74.04416,
-                      40.7896
-                  ]
-              }
-          },
-          {
-              "type": "Feature",
-              "properties": {
-                  "message": "Baz",
-                  "iconSize": [40, 40]
-              },
-              "geometry": {
-                  "type": "Point",
-                  "coordinates": [
-                    -74.14416,
-                      40.6896
+                    -74.0447,
+                      40.692
                   ]
               }
           }
@@ -133,33 +105,38 @@ var bounds = [
 ];
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/jjjiia123/cjbtpo92mauj42sqmosoj5hls',
+    style: 'mapbox://styles/jjjiia123/cjcaj2jfu1taj2sljzgx5rg1v',
     center: center,
-    zoom: 11,
-    maxZoom: 18.2,
+    zoom: 12,
+    maxZoom: 15,
     minZoom:10,
     pitch: 50,
     bearing: 3,
     maxBounds: bounds // Sets bounds as max    
 });
 
-//markers.features.forEach(function(marker) {
-//    // create a DOM element for the marker
-//    var el = document.createElement('div');
-//    el.className = 'marker';
-//    el.style.backgroundImage = 'url(statue.png)';
-//    el.style.width = marker.properties.iconSize[0] + 'px';
-//    el.style.height = marker.properties.iconSize[1] + 'px';
-//
-//    el.addEventListener('click', function() {
-//        window.alert(marker.properties.message);
-//    });
-//
-//    // add marker to map
-//    new mapboxgl.Marker(el)
-//        .setLngLat(marker.geometry.coordinates)
-//        .addTo(map);
-//});
+markers.features.forEach(function(marker) {
+    // create a DOM element for the marker
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(statue_of_liberty.svg)';
+    el.style.width = marker.properties.iconSize[0] + 'px';
+    el.style.height = marker.properties.iconSize[1] + 'px';
+    
+    if(map.getZoom()>12){
+      el.style.width = marker.properties.iconSize[0] + 'px';
+      el.style.height = marker.properties.iconSize[1] + 'px';
+    }
+
+    el.addEventListener('click', function() {
+        window.alert(marker.properties.message);
+    });
+
+    // add marker to map
+    new mapboxgl.Marker(el)
+        .setLngLat(marker.geometry.coordinates)
+        .addTo(map);
+});
 
 
 map.addControl(new mapboxgl.GeolocateControl({
@@ -173,28 +150,28 @@ map.addControl(new MapboxGeocoder({
 }));
 map.addControl(new mapboxgl.NavigationControl());
 
-//map.on('load',function(){
-//  
-//  map.flyTo({
-//      // These options control the ending camera position: centered at
-//      // the target, at zoom level 9, and north up.
-//      center: center,
-//      zoom: 12.5,
-//      bearing:3,
-//    pitch: 50,
-//      // These options control the flight curve, making it move
-//      // slowly and zoom out almost completely before starting
-//      // to pan.
-//      speed: 0.1, // make the flying slow
-//      curve: 1, // change the speed at which it zooms out
-//
-//      // This can be any easing function: it takes a number between
-//      // 0 and 1 and returns another number between 0 and 1.
-//      easing: function (t) {
-//          return t;
-//      }
-//  });
-//})
+map.on('load',function(){
+  
+  map.flyTo({
+      // These options control the ending camera position: centered at
+      // the target, at zoom level 9, and north up.
+      center: center,
+      zoom: 12.5,
+      bearing:3,
+    pitch: 50,
+      // These options control the flight curve, making it move
+      // slowly and zoom out almost completely before starting
+      // to pan.
+      speed: 0.1, // make the flying slow
+      curve: 1, // change the speed at which it zooms out
+
+      // This can be any easing function: it takes a number between
+      // 0 and 1 and returns another number between 0 and 1.
+      easing: function (t) {
+          return t;
+      }
+  });
+})
 
 
 map.on('load', function() {
@@ -208,31 +185,6 @@ map.on('load', function() {
             break;
         }
     }
-    map.addLayer({
-        'id': 'test',
-        'source': 'composite',
-        'source-layer': 'unBlocked_outdoorsonly_1decim-3wx0ax',
-        'filter': ['==', 'extrude', 'true'],
-        'type': 'fill-extrusion',
-        'minzoom': 15,
-        'paint': {
-            'fill-extrusion-color': 'red',
-
-            // use an 'interpolate' expression to add a smooth transition effect to the
-            // buildings as the user zooms in
-            'fill-extrusion-height': [
-                "interpolate", ["linear"], ["zoom"],
-                15, 0,
-                15.05, ["get", "elevation"]
-            ],
-            'fill-extrusion-base': [
-                "interpolate", ["linear"], ["zoom"],
-                15, 0,
-                15.05, ["get", "groundelev"]
-            ],
-            'fill-extrusion-opacity': .6
-        }
-    }, labelLayerId);
     
    // map.addLayer({
    //     'id': '3d-buildings',
@@ -263,12 +215,12 @@ map.on('load', function() {
 
 
 map.on('mousemove', function (e) {
-  
+  console.log(e)
     var features = map.queryRenderedFeatures(e.point);
     if(features.length>0){
         d3.select("#features").style("opacity",1)
       var topLayer = features[0].layer["source-layer"]
-      if(topLayer =="notBlocked_withAddress"){
+      if(topLayer =="unblocked-outdoors-1decimal-9q8ias"){
         var text = features[0].properties.address
         d3.select("this").style("cursor","pointer")
         document.getElementById('features').innerHTML = text
