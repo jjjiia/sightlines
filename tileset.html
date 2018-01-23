@@ -110,8 +110,8 @@ var map = new mapboxgl.Map({
     zoom: 12,
     maxZoom: 15,
     minZoom:10,
-//    pitch: 50,
-//    bearing: 3,
+    pitch: 50,
+    bearing: 3,
     maxBounds: bounds // Sets bounds as max    
 });
 
@@ -157,13 +157,13 @@ map.on('load',function(){
       // the target, at zoom level 9, and north up.
       center: center,
       zoom: 12.5,
-//      bearing:3,
-//    pitch: 50,
-//      // These options control the flight curve, making it move
-//      // slowly and zoom out almost completely before starting
-//      // to pan.
-//      speed: 0.1, // make the flying slow
-//      curve: 1, // change the speed at which it zooms out
+      bearing:3,
+    pitch: 50,
+      // These options control the flight curve, making it move
+      // slowly and zoom out almost completely before starting
+      // to pan.
+      speed: 0.1, // make the flying slow
+      curve: 1, // change the speed at which it zooms out
 //
       // This can be any easing function: it takes a number between
       // 0 and 1 and returns another number between 0 and 1.
