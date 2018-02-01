@@ -1,11 +1,4 @@
-var sections = [{"Title":"Population Density (per Sq. Mile)",
-"Universe":"Total Population",
-"Name":"T2",
- "Variables":
- {"T002_001":"Total Population",
-"T002_002":"Population Density (Per Sq. Mile)",
-"T002_003":"Area (Land)"}
-},
+var sections = [
 {"Title":"Age",
 "Universe":"Total Population",
 "Name":"T7",
@@ -77,42 +70,6 @@ var sections = [{"Title":"Population Density (per Sq. Mile)",
 "T056_015":"$125,000 to $149,999",
 "T056_016":"$150,000 to $199,999",
 "T056_017":"$200,000 or More"}
-},
-{"Title":"Median Household Income (In <DollarYear> Inflation Adjusted Dollars)",
-"Universe":"Households",
-"Name":"T57",
- "Variables":
- {"T057_001":"Median Household Income (In 2016 Inflation Adjusted Dollars)"}
-},
-{"Title":"Average Household Income (In <DollarYear> Inflation Adjusted Dollars)",
-"Universe":"Households",
-"Name":"T59",
- "Variables":
- {"T059_001":"Average Household Income (In 2016 Inflation Adjusted Dollars)"}
-},
-{"Title":"Tenure",
-"Universe":"Occupied Housing Units",
-"Name":"T94",
- "Variables":
- {"T094_001":"Occupied Housing Units:",
-"T094_002":"Owner Occupied",
-"T094_003":"Renter Occupied"}
-},
-{"Title":"Year Structure Built (Renter-Occupied Housing Units)",
-"Universe":"Universe: Renter-Occupied Housing Units",
-"Name":"T193",
- "Variables":
- {"T193_001":"Renter-Occupied Housing Units:",
-"T193_002":"Built 2014 or Later",
-"T193_003":"Built 2010 To 2013",
-"T193_004":"Built 2000 To 2009",
-"T193_005":"Built 1990 To 1999",
-"T193_006":"Built 1980 To 1989",
-"T193_007":"Built 1970 To 1979",
-"T193_008":"Built 1960 To 1969",
-"T193_009":"Built 1950 To 1959",
-"T193_010":"Built 1940 To 1949",
-"T193_011":"Built 1939 or Earlier"}
 },
 {"Title":"Year Householder Moved Into Unit (Renter-Occupied Housing Units)",
 "Universe":"Universe: Renter-Occupied Housing Units",

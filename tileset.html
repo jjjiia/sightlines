@@ -8,6 +8,16 @@
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.css' rel='stylesheet' />
    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.1.1/mapbox-gl-geocoder.min.js'></script>
+	<script src="static/javascripts/d3.v4.min.js"></script>
+	<script src="static/javascripts/topojson.v1.min.js"></script>
+  
+	<script src="static/javascripts/jquery.min.js"></script>
+	<script src="static/javascripts/d3.tip.v0.6.3.js"></script>
+    <script src="static/javascripts/queue.v1.min.js"></script>
+	<script src="static/javascripts/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="static/stylesheets/jquery-ui.css" />
+	<link rel="stylesheet" href="static/bootstrap-3.1.1-dist/css/bootstrap.min.css">
+	<script src="static/javascripts/jquery-ui.min.js"></script>
 <link rel='stylesheet' href='geocoder.css' type='text/css' />
     <style>
         body { margin:0; padding:10;
@@ -49,14 +59,27 @@
           z-index:1;
           position:absolute; top:60px; left:20px;
         }
+        #chart{
+          width:400px;
+          height:100%;
+          position:absolute;
+          z-index:5;
+          background-color:rgba(255,255,255,.8);
+          border-right:1px solid rgba(109,111,227,1);
+          overflow:auto;
+        }
     </style>
 </head>
 <body>
 
 <div id='map'></div>
+<div id='chart'></div>
 <!--<div id='title'>Sightlines in New York City</div>
 <div id='subtitle'></div>-->
 <pre id='features'></pre>
+<script src="se_sectionKeys.js"></script>
+
+<script src="charts.js"></script>
 <script>
   var markers = {
       "type": "FeatureCollection",
@@ -107,11 +130,11 @@ var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/jjjiia123/cjcqc1htp4vg52vpsqdahke9p',
     center: center,
-    zoom: 12,
+    zoom: 11,
     maxZoom: 15,
     minZoom:10,
-    pitch: 50,
-    bearing: 3,
+///    pitch: 50,
+///    bearing: 3,
     maxBounds: bounds // Sets bounds as max    
 });
 
@@ -150,28 +173,28 @@ map.addControl(new MapboxGeocoder({
 }));
 map.addControl(new mapboxgl.NavigationControl());
 
-map.on('load',function(){
-  
-  map.flyTo({
-      // These options control the ending camera position: centered at
-      // the target, at zoom level 9, and north up.
-      center: center,
-      zoom: 12.5,
-      bearing:3,
-    pitch: 50,
-      // These options control the flight curve, making it move
-      // slowly and zoom out almost completely before starting
-      // to pan.
-      speed: 0.1, // make the flying slow
-      curve: 1, // change the speed at which it zooms out
-//
-      // This can be any easing function: it takes a number between
-      // 0 and 1 and returns another number between 0 and 1.
-      easing: function (t) {
-          return t;
-      }
-  });
-})
+//map.on('load',function(){
+//  
+//  map.flyTo({
+//      // These options control the ending camera position: centered at
+//      // the target, at zoom level 9, and north up.
+//      center: center,
+//      zoom: 12.5,
+//      bearing:3,
+//    pitch: 50,
+//      // These options control the flight curve, making it move
+//      // slowly and zoom out almost completely before starting
+//      // to pan.
+//      speed: 0.1, // make the flying slow
+//      curve: 1, // change the speed at which it zooms out
+////
+//      // This can be any easing function: it takes a number between
+//      // 0 and 1 and returns another number between 0 and 1.
+//      easing: function (t) {
+//          return t;
+//      }
+//  });
+//})
 
 
 map.on('load', function() {
