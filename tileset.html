@@ -21,9 +21,11 @@
 <link rel='stylesheet' href='geocoder.css' type='text/css' />
     <style>
         body { margin:0; padding:10;
+          overflow:hidden;
          }
         #map { position:absolute; top:0; bottom:0; width:100%; 
           z-index:-1;
+          overflow:hidden;
         }
         #features {
             position: absolute;
@@ -50,30 +52,75 @@
           color:rgba(109,111,227,1);
           position:absolute; top:0px; bottom:0px;
           z-index:1;
+          width:400px;
         }
         #subtitle{
-          width:300px;
-          height:200px;
-          border:1px solid rgba(109,111,227,1);
+          width:460px;
+          border-top:1px solid rgba(109,111,227,1);
           color:rgba(109,111,227,1);
           z-index:1;
-          position:absolute; top:60px; left:20px;
+          padding:20px;
+          position:absolute; top:55px; left:20px;
+          font-size:11px;
+          background:#fff;
         }
         #chart{
-          width:400px;
-          height:100%;
+          width:500px;
+          height:570px;
           position:absolute;
           z-index:5;
+          top:225px;
           background-color:rgba(255,255,255,.8);
           border-right:1px solid rgba(109,111,227,1);
+          color:rgba(113,142,224,1);
+          font-size:16px;
+          padding:5px;
           overflow:auto;
+        }
+        #layersmenu{
+          position:absolute;
+          right:0px;
+          top:0px;
+          padding:10px;
+        }
+        #layersmenu a{
+          display: block;
+          background: rgba(113,142,224,1);
+          padding:10px;
+          margin:10px;
+          border-radius:3px;
+          color:#fff;
+          text-align:center;
+        }
+        #key{
+          color:rgba(113,142,224,1);
+          font-size:12px;
+          position:fixed;
+          top:180px;
+          
+        }
+        .tick text{
+          fill:#aaa;
+        }
+        .tick line{
+          stroke:#aaa;
         }
     </style>
 </head>
 <body>
-
 <div id='map'></div>
-<div id='chart'></div>
+  <div id="title">What does the statue see?</div>
+  <div id="subtitle">This map asks where in New York City can you see the statue, and what does the statue see of the city? 
+    Because in abstract situations sightlines are reciprocal, we can use viewshed analysis to determine visible parts of the city from the Statue. Below is data of Census tracts that contain points which are visible, compared to the whole of New York City. 
+    <br/>The New York City Building Footprint data was used, and New Jersey is not included in this map.<br/>
+  <div id='key'>
+  </div>
+  </div>
+
+
+<div id='chart'>
+</div>
+<div id="layersmenu"></div>
 <!--<div id='title'>Sightlines in New York City</div>
 <div id='subtitle'></div>-->
 <pre id='features'></pre>
@@ -121,7 +168,7 @@ function hoverdiv(e,divid){
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiampqaWlhMTIzIiwiYSI6ImNpbDQ0Z2s1OTN1N3R1eWtzNTVrd29lMDIifQ.gSWjNbBSpIFzDXU2X5YCiQ';
 var statue = [-74.044502, 40.689247]
-var center = [statue[0]+.05,statue[1]]
+var center = [statue[0]-.1,statue[1]]
 var bounds = [
     [center[0]-.5, center[1]-.5], // Southwest coordinates
     [center[0]+.5, center[1]+.5]  // Northeast coordinates
@@ -137,6 +184,42 @@ var map = new mapboxgl.Map({
 ///    bearing: 3,
     maxBounds: bounds // Sets bounds as max    
 });
+
+map.on("load",function(){
+  var toggleableLayerIds = [ 'visible-blockgroups']//, 'dot',"glow" ];
+
+  var id = toggleableLayerIds[0];
+
+  var link = document.createElement('a');
+    link.href = '#';
+    link.className = '';
+    link.textContent = "Show/Hide Block Groups";
+    map.setLayoutProperty("visible-blockgroups", 'visibility', 'none');
+
+  link.onclick = function (e) {
+      var clickedLayer = 'visible-blockgroups';
+      e.preventDefault();
+      e.stopPropagation();
+
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+      if (visibility === 'visible') {
+          map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+          this.className = '';
+      } else {
+          this.className = 'active';
+          map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+  };
+  if(id =='visible-blockgroups'){
+    var layers = document.getElementById('layersmenu');
+    layers.appendChild(link);
+  }
+  
+})
+  
+
+
 
 markers.features.forEach(function(marker) {
     // create a DOM element for the marker
@@ -162,17 +245,17 @@ markers.features.forEach(function(marker) {
 });
 
 
-map.addControl(new mapboxgl.GeolocateControl({
-    positionOptions: {
-        enableHighAccuracy: true
-    },
-    trackUserLocation: true
-}));
-map.addControl(new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken
-}));
-map.addControl(new mapboxgl.NavigationControl());
-
+//map.addControl(new mapboxgl.GeolocateControl({
+//    positionOptions: {
+//        enableHighAccuracy: true
+//    },
+//    trackUserLocation: true
+//}));
+//map.addControl(new MapboxGeocoder({
+//    accessToken: mapboxgl.accessToken
+//}));
+//map.addControl(new mapboxgl.NavigationControl());
+//
 //map.on('load',function(){
 //  
 //  map.flyTo({
@@ -238,7 +321,7 @@ map.on('load', function() {
 
 
 map.on('mousemove', function (e) {
-  console.log(e)
+    //console.log(e)
     var features = map.queryRenderedFeatures(e.point);
     if(features.length>0){
         d3.select("#features").style("opacity",1)
@@ -263,7 +346,7 @@ map.on('mousemove', function (e) {
 
 map.on('click', function (e) {
     var features = map.queryRenderedFeatures(e.point);
-    console.log(features[0].geometry.coordinates)
+    //console.log(features[0].geometry.coordinates)
     map.flyTo({center: features[0].geometry.coordinates});
     
     //if(features.length()>0){
@@ -283,8 +366,8 @@ map.on('click', function (e) {
     //document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
 });
 d3.selectAll("div .mapboxgl-ctrl-bottom-right").remove()
-d3.select(".mapboxgl-ctrl input").attr("placeholder","SEARCH ")
-d3.select(".mapboxgl-ctrl-zoom-in").attr("background-image","url(\"search.png\")")
+//d3.select(".mapboxgl-ctrl input").attr("placeholder","SEARCH ")
+//d3.select(".mapboxgl-ctrl-zoom-in").attr("background-image","url(\"search.png\")")
 
 
 d3.selectAll(".mapboxgl-ctrl-zoom-in button").attr("background-image","url(\"zoomin.png\")")

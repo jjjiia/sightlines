@@ -30,7 +30,7 @@ var sections = [
 "T013_007":"Some Other Race Alone",
 "T013_008":"Two or More Races"}
 },
-{"Title":"Occupation for Employed Civilian Population 16 Years and Over",
+{"Title":"Occupation for Employed Civilians over 16",
 "Universe":"Employed civilian Population 16 Years and Over",
 "Name":"T50",
  "Variables":
@@ -49,7 +49,7 @@ var sections = [
 "T050_013":"Production",
 "T050_014":"Transportation and Material Moving"}
 },
-{"Title":"Household Income (In <DollarYear> Inflation Adjusted Dollars)",
+{"Title":"Household Income (In Inflation Adjusted Dollars)",
 "Universe":"Households",
 "Name":"T56",
  "Variables":
@@ -71,7 +71,7 @@ var sections = [
 "T056_016":"$150,000 to $199,999",
 "T056_017":"$200,000 or More"}
 },
-{"Title":"Year Householder Moved Into Unit (Renter-Occupied Housing Units)",
+{"Title":"Year Householder Moved Into Unit (Rented)",
 "Universe":"Universe: Renter-Occupied Housing Units",
 "Name":"T219",
  "Variables":
